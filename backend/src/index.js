@@ -1,11 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const sequelize = require('../src/config/database.js');
+const sequelize = require('./config/database.js'); 
+const authRoutes = require('./routes/authRoutes.js');
+
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 3000;
 
-app.listen(port, ()=>{
-    console.log(`Server is running on port ${port}`);
-})
+const corsOptions = {
+    origin: "*",
+}
+
+app.use(cors());
+app.use(express.json());
+app.use('/api/auth', authRoutes)
+
+sequelize.sync().then(() => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Server running on http://localhost:${port}`);
+    });
+  });
